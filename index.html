@@ -8,17 +8,34 @@
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>Life Calendar</h1>
-            <p class="subtitle">85살까지 산다면 나는 몇 주를 살 수 있을까?</p>
-            <p class="subtitle-answer">약 4,400주 정도 산다고 합니다.</p>
-        </header>
-
         <div class="input-section">
-            <label for="birthDate">생년월일을 입력하세요:</label>
-            <input type="date" id="birthDate" />
-            <button id="calculateBtn">내 인생 보기</button>
+            <div class="input-group">
+                <select id="birthYear" class="date-select">
+                    <option value="">년도</option>
+                </select>
+                <select id="birthMonth" class="date-select">
+                    <option value="">월</option>
+                </select>
+                <select id="birthDay" class="date-select">
+                    <option value="">일</option>
+                </select>
+                <button id="calculateBtn">></button>
+            </div>
+            <button id="infoBtn" class="info-btn" title="정보 보기">?</button>
         </div>
+
+        <div id="infoModal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h2>Life Calendar</h2>
+                <p>85살까지 산다면 나는 몇 주를 살 수 있을까?</p>
+                <p>약 4,400주 정도 산다고 합니다.</p>
+            </div>
+        </div>
+
+        <header>
+            <h1 id="ageTitle">00 to 85</h1>
+        </header>
 
         <div class="stats-section" id="statsSection" style="display: none;">
             <div class="stat-item">
@@ -38,17 +55,6 @@
         <div class="calendar-wrapper">
             <div id="lifeCalendar" class="life-calendar">
                 <!-- 4400개의 박스가 JavaScript로 생성됩니다 -->
-            </div>
-        </div>
-
-        <div class="legend">
-            <div class="legend-item">
-                <div class="legend-box lived"></div>
-                <span>살아온 시간</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-box remaining"></div>
-                <span>남은 시간</span>
             </div>
         </div>
     </div>

@@ -1,3 +1,10 @@
+@font-face {
+    font-family: 'Helvetica Black Oblique';
+    src: url('./font/Helvetica .Black Oblique.otf') format('opentype');
+    font-weight: 900;
+    font-style: oblique;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -6,8 +13,8 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: #333;
+    background: #000000;
+    color: #ffffff;
     padding: 20px;
     min-height: 100vh;
 }
@@ -15,79 +22,175 @@ body {
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    background: white;
+    background: #000000;
     padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    border-radius: 0;
+    box-shadow: none;
 }
 
 header {
-    text-align: center;
+    text-align: left;
     margin-bottom: 40px;
 }
 
 h1 {
-    font-size: 2.5rem;
+    font-family: 'Helvetica Black Oblique', 'Helvetica', 'Arial Black', sans-serif;
+    font-size: 10rem;
     margin-bottom: 10px;
-    color: #2c3e50;
-    font-weight: 700;
+    color: #ffffff;
+    font-weight: 900;
+    font-style: oblique;
+    letter-spacing: 0.03em;
+    word-spacing: -0.1em;
 }
 
-.subtitle {
-    color: #7f8c8d;
+.info-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #333333;
+    color: #ffffff;
+    border: 2px solid #555555;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    flex-shrink: 0;
+}
+
+.info-btn:hover {
+    background: #555555;
+    transform: scale(1.1);
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    animation: fadeIn 0.3s;
+}
+
+.modal-content {
+    background-color: #1a1a1a;
+    margin: 15% auto;
+    padding: 30px;
+    border: 1px solid #333333;
+    border-radius: 12px;
+    width: 80%;
+    max-width: 500px;
+    position: relative;
+    animation: slideDown 0.3s;
+}
+
+.modal-content h2 {
+    color: #ffffff;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+}
+
+.modal-content p {
+    color: #aaaaaa;
     font-size: 1.1rem;
-    margin-bottom: 5px;
+    line-height: 1.6;
+    margin-bottom: 10px;
 }
 
-.subtitle-answer {
-    color: #3498db;
-    font-size: 1rem;
-    font-weight: 600;
+.close-btn {
+    color: #aaaaaa;
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    font-size: 2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: #ffffff;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 .input-section {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    gap: 15px;
     margin-bottom: 30px;
     flex-wrap: wrap;
 }
 
-.input-section label {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #2c3e50;
+.input-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-#birthDate {
-    padding: 12px 20px;
-    font-size: 1rem;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
+.date-select {
+    padding: 10px 14px;
+    font-size: 0.95rem;
+    border: 1px solid #333333;
+    border-radius: 4px;
     outline: none;
-    transition: border 0.3s;
+    transition: all 0.2s;
+    background: #000000;
+    color: #ffffff;
+    cursor: pointer;
+    min-width: 90px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 16px;
+    padding-right: 32px;
 }
 
-#birthDate:focus {
-    border-color: #3498db;
+.date-select:hover {
+    border-color: #555555;
+}
+
+.date-select:focus {
+    border-color: #777777;
+}
+
+.date-select option {
+    background: #1a1a1a;
+    color: #ffffff;
+    padding: 10px;
 }
 
 #calculateBtn {
-    padding: 12px 30px;
-    font-size: 1rem;
+    padding: 10px 24px;
+    font-size: 0.95rem;
     font-weight: 600;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: #ffffff;
+    color: #000000;
     border: none;
-    border-radius: 8px;
+    border-radius: 4px;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: all 0.2s;
+    margin-left: 8px;
 }
 
 #calculateBtn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    background: #e0e0e0;
 }
 
 #calculateBtn:active {
@@ -100,7 +203,7 @@ h1 {
     gap: 40px;
     margin-bottom: 30px;
     padding: 20px;
-    background: #f8f9fa;
+    background: #000000;
     border-radius: 12px;
     flex-wrap: wrap;
 }
@@ -114,14 +217,14 @@ h1 {
 
 .stat-label {
     font-size: 0.9rem;
-    color: #7f8c8d;
+    color: #aaaaaa;
     font-weight: 500;
 }
 
 .stat-value {
     font-size: 1.8rem;
     font-weight: 700;
-    color: #2c3e50;
+    color: #ffffff;
 }
 
 .calendar-wrapper {
@@ -134,14 +237,14 @@ h1 {
     grid-template-columns: repeat(52, 1fr);
     gap: 2px;
     padding: 20px;
-    background: #f8f9fa;
+    background: #000000;
     border-radius: 12px;
     min-width: 600px;
 }
 
 .week-box {
     aspect-ratio: 1;
-    background: #e0e0e0;
+    background: #333333;
     border-radius: 2px;
     transition: all 0.3s;
     cursor: pointer;
@@ -155,7 +258,7 @@ h1 {
 }
 
 .week-box.lived {
-    background: #2c3e50;
+    background: #ffffff;
 }
 
 .week-box.current-week {
@@ -192,16 +295,16 @@ h1 {
 }
 
 .legend-box.lived {
-    background: #2c3e50;
+    background: #ffffff;
 }
 
 .legend-box.remaining {
-    background: #e0e0e0;
+    background: #333333;
 }
 
 .legend-item span {
     font-size: 0.95rem;
-    color: #555;
+    color: #aaaaaa;
 }
 
 @media (max-width: 768px) {
