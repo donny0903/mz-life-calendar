@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MZ Life Calendar - 나의 인생은 몇 주일까?</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Life Calendar</h1>
+            <p class="subtitle">85살까지 산다면 나는 몇 주를 살 수 있을까?</p>
+            <p class="subtitle-answer">약 4,400주 정도 산다고 합니다.</p>
+        </header>
+
+        <div class="input-section">
+            <label for="birthDate">생년월일을 입력하세요:</label>
+            <input type="date" id="birthDate" />
+            <button id="calculateBtn">내 인생 보기</button>
+        </div>
+
+        <div class="stats-section" id="statsSection" style="display: none;">
+            <div class="stat-item">
+                <span class="stat-label">살아온 주</span>
+                <span class="stat-value" id="livedWeeks">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">남은 주</span>
+                <span class="stat-value" id="remainingWeeks">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">진행률</span>
+                <span class="stat-value" id="percentage">0%</span>
+            </div>
+        </div>
+
+        <div class="calendar-wrapper">
+            <div id="lifeCalendar" class="life-calendar">
+                <!-- 4400개의 박스가 JavaScript로 생성됩니다 -->
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-box lived"></div>
+                <span>살아온 시간</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box remaining"></div>
+                <span>남은 시간</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
