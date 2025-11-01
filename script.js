@@ -109,14 +109,64 @@ function createCalendarGrid() {
         weekBox.classList.add('week-box');
         weekBox.dataset.week = i + 1;
         
-        // 호버 시 툴팁 표시를 위한 타이틀
-        const year = Math.floor(i / WEEKS_PER_YEAR) + 1;
-        const weekOfYear = (i % WEEKS_PER_YEAR) + 1;
-        weekBox.title = `${year}년차 ${weekOfYear}주`;
+        // 호버/클릭 이벤트로 통계 표시
+        weekBox.addEventListener('mouseenter', showStats);
+        weekBox.addEventListener('mouseleave', hideStats);
+        weekBox.addEventListener('click', toggleStats);
         
         lifeCalendar.appendChild(weekBox);
     }
 }
+
+// 통계 표시
+let statsVisible = false;
+let statsTimeout = null;
+
+function showStats() {
+    console.log('showStats called, calculated:', statsSection.dataset.calculated);
+    if (statsSection.dataset.calculated === 'true') {
+        clearTimeout(statsTimeout);
+        statsSection.classList.add('visible');
+        statsVisible = true;
+        console.log('Stats shown');
+    }
+}
+
+function hideStats() {
+    if (statsVisible && statsSection.dataset.locked !== 'true') {
+        statsTimeout = setTimeout(() => {
+            statsSection.classList.remove('visible');
+            statsVisible = false;
+        }, 200);
+    }
+}
+
+function toggleStats(e) {
+    e.stopPropagation();
+    console.log('toggleStats called, calculated:', statsSection.dataset.calculated);
+    if (statsSection.dataset.calculated === 'true') {
+        if (statsSection.classList.contains('visible')) {
+            statsSection.dataset.locked = 'false';
+            statsSection.classList.remove('visible');
+            statsVisible = false;
+            console.log('Stats hidden');
+        } else {
+            statsSection.dataset.locked = 'true';
+            statsSection.classList.add('visible');
+            statsVisible = true;
+            console.log('Stats shown (locked)');
+        }
+    }
+}
+
+// 외부 클릭 시 통계 숨기기
+document.addEventListener('click', (e) => {
+    if (!statsSection.contains(e.target) && !e.target.classList.contains('week-box')) {
+        statsSection.dataset.locked = 'false';
+        statsSection.classList.remove('visible');
+        statsVisible = false;
+    }
+});
 
 // 계산 및 표시
 function calculate() {
@@ -164,22 +214,17 @@ function calculate() {
 
 // 나이 타이틀 업데이트
 function updateAgeTitle(koreanAge) {
-    ageTitle.textContent = `${koreanAge} to 85`;
+    ageTitle.innerHTML = `${koreanAge} <span class="to-text">to</span> 85`;
 }
 
 // 통계 업데이트
 function updateStats(lived, remaining, percentage) {
     livedWeeksEl.textContent = lived.toLocaleString();
     remainingWeeksEl.textContent = remaining > 0 ? remaining.toLocaleString() : '0';
-    percentageEl.textContent = `${percentage}%`;
+    percentageEl.textContent = `(${percentage}%)`;
     
-    statsSection.style.display = 'flex';
-    
-    // 애니메이션 효과
-    statsSection.style.animation = 'none';
-    setTimeout(() => {
-        statsSection.style.animation = 'fadeIn 0.5s ease-in';
-    }, 10);
+    // 통계가 계산되었음을 표시
+    statsSection.dataset.calculated = 'true';
 }
 
 // 캘린더 업데이트

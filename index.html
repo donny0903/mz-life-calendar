@@ -19,7 +19,7 @@
                 <select id="birthDay" class="date-select">
                     <option value="">일</option>
                 </select>
-                <button id="calculateBtn">></button>
+                <button id="calculateBtn">!</button>
             </div>
             <button id="infoBtn" class="info-btn" title="정보 보기">?</button>
         </div>
@@ -34,21 +34,18 @@
         </div>
 
         <header>
-            <h1 id="ageTitle">00 to 85</h1>
+            <h1 id="ageTitle">00 <span class="to-text">to</span> 85</h1>
         </header>
 
-        <div class="stats-section" id="statsSection" style="display: none;">
-            <div class="stat-item">
+        <div class="stats-section" id="statsSection">
+            <div class="stat-line">
                 <span class="stat-label">살아온 주</span>
                 <span class="stat-value" id="livedWeeks">0</span>
+                <span class="stat-percentage" id="percentage">(0%)</span>
             </div>
-            <div class="stat-item">
+            <div class="stat-line">
                 <span class="stat-label">남은 주</span>
                 <span class="stat-value" id="remainingWeeks">0</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">진행률</span>
-                <span class="stat-value" id="percentage">0%</span>
             </div>
         </div>
 
