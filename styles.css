@@ -20,7 +20,7 @@ body {
 }
 
 .container {
-    max-width: 1000px;
+    max-width: 1200px;
     margin: 0 auto;
     background: #000000;
     padding: 0;
@@ -64,7 +64,6 @@ h1 {
     margin-bottom: 10px;
     color: #ffffff;
     font-weight: 500;
-    letter-spacing: -0.02em;
     white-space: nowrap;
 }
 
@@ -375,13 +374,14 @@ h1 {
     display: none;
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
-    padding: 30px 40px;
+    gap: 8px;
+    padding: 20px 24px;
     background: rgba(0, 0, 0, 0.95);
     border: 1px solid #333333;
     border-radius: 12px;
-    z-index: 100;
+    z-index: 1000;
     pointer-events: none;
+    white-space: nowrap;
 }
 
 .stats-section.visible {
@@ -396,20 +396,27 @@ h1 {
 
 .stat-label {
     font-size: 1rem;
-    color: #aaaaaa;
+    color: #e0e0e0;
     font-weight: 500;
     min-width: 80px;
 }
 
+.stat-label-unit {
+    font-size: 1rem;
+    color: #c5c5c5;
+    font-weight: 500;
+    margin-left: 4px;
+}
+
 .stat-value {
-    font-size: 1.2rem;
-    font-weight: 700;
+    font-size: 1.1rem;
+    font-weight: 600;
     color: #ffffff;
 }
 
 .stat-percentage {
     font-size: 1rem;
-    color: #666666;
+    color: #a3a3a3;
     font-weight: 600;
 }
 
@@ -439,8 +446,9 @@ h1 {
 
 .week-box:hover {
     transform: scale(1.15);
-    box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
+    box-shadow: 0 2px 8px rgba(255, 165, 0, 0.5);
     z-index: 10;
+    background: #ff8c00 !important;
 }
 
 .week-box.lived {

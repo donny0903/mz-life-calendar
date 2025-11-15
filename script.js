@@ -15,6 +15,7 @@ const statsSection = document.getElementById('statsSection');
 const livedWeeksEl = document.getElementById('livedWeeks');
 const remainingWeeksEl = document.getElementById('remainingWeeks');
 const percentageEl = document.getElementById('percentage');
+const hoverAgeEl = document.getElementById('hoverAge');
 const infoBtn = document.getElementById('infoBtn');
 const infoModal = document.getElementById('infoModal');
 const closeBtn = document.querySelector('.close-btn');
@@ -235,15 +236,34 @@ function createCalendarGrid() {
 // 통계 표시
 let statsVisible = false;
 let statsTimeout = null;
+let hoverWeekInfo = null;
 
-function showStats() {
-    console.log('showStats called, calculated:', statsSection.dataset.calculated);
+function showStats(e) {
+    const weekBox = e.currentTarget;
+    const weekNumber = parseInt(weekBox.dataset.week);
+    
     if (statsSection.dataset.calculated === 'true') {
         clearTimeout(statsTimeout);
+        
+        // hover한 주차 정보 표시
+        updateHoverStats(weekNumber);
+        
+        // 마우스 오른쪽에 모달 위치 설정
+        updateStatsPosition(e);
+        
         statsSection.classList.add('visible');
         statsVisible = true;
-        console.log('Stats shown');
     }
+}
+
+// 마우스 위치에 따라 모달 위치 업데이트
+function updateStatsPosition(e) {
+    const offsetX = 20; // 마우스 오른쪽으로 20px
+    const offsetY = -50; // 마우스보다 약간 위로
+    
+    statsSection.style.left = `${e.clientX + offsetX}px`;
+    statsSection.style.top = `${e.clientY + offsetY}px`;
+    statsSection.style.transform = 'none';
 }
 
 function hideStats() {
@@ -251,25 +271,66 @@ function hideStats() {
         statsTimeout = setTimeout(() => {
             statsSection.classList.remove('visible');
             statsVisible = false;
+            
+            // 원래 통계로 복원
+            if (hoverWeekInfo) {
+                restoreOriginalStats();
+            }
         }, 200);
     }
 }
 
 function toggleStats(e) {
     e.stopPropagation();
-    console.log('toggleStats called, calculated:', statsSection.dataset.calculated);
+    const weekBox = e.currentTarget;
+    const weekNumber = parseInt(weekBox.dataset.week);
+    
     if (statsSection.dataset.calculated === 'true') {
         if (statsSection.classList.contains('visible')) {
             statsSection.dataset.locked = 'false';
             statsSection.classList.remove('visible');
             statsVisible = false;
-            console.log('Stats hidden');
+            restoreOriginalStats();
         } else {
             statsSection.dataset.locked = 'true';
+            updateHoverStats(weekNumber);
             statsSection.classList.add('visible');
             statsVisible = true;
-            console.log('Stats shown (locked)');
         }
+    }
+}
+
+// hover한 주차 정보 업데이트
+function updateHoverStats(weekNumber) {
+    // 원래 값 저장 (처음 한 번만)
+    if (!hoverWeekInfo) {
+        hoverWeekInfo = {
+            age: hoverAgeEl.textContent,
+            lived: livedWeeksEl.textContent,
+            remaining: remainingWeeksEl.textContent,
+            percentage: percentageEl.textContent
+        };
+    }
+    
+    // 주차를 나이로 변환 (52주 = 1년, 첫 주부터 1살)
+    const ageInYears = Math.ceil(weekNumber / 52);
+    
+    const remaining = TOTAL_WEEKS - weekNumber;
+    const percentage = ((weekNumber / TOTAL_WEEKS) * 100).toFixed(1);
+    
+    hoverAgeEl.textContent = ageInYears.toLocaleString();
+    livedWeeksEl.textContent = weekNumber.toLocaleString();
+    remainingWeeksEl.textContent = remaining > 0 ? remaining.toLocaleString() : '0';
+    percentageEl.textContent = `(${percentage}%)`;
+}
+
+// 원래 통계로 복원
+function restoreOriginalStats() {
+    if (hoverWeekInfo) {
+        hoverAgeEl.textContent = hoverWeekInfo.age;
+        livedWeeksEl.textContent = hoverWeekInfo.lived;
+        remainingWeeksEl.textContent = hoverWeekInfo.remaining;
+        percentageEl.textContent = hoverWeekInfo.percentage;
     }
 }
 
@@ -279,6 +340,7 @@ document.addEventListener('click', (e) => {
         statsSection.dataset.locked = 'false';
         statsSection.classList.remove('visible');
         statsVisible = false;
+        restoreOriginalStats();
     }
 });
 
@@ -328,12 +390,19 @@ function updateAgeTitle(koreanAge) {
 
 // 통계 업데이트
 function updateStats(lived, remaining, percentage) {
+    // 나이 계산 (주차를 나이로 변환, 첫 주부터 1살)
+    const ageInYears = Math.ceil(lived / 52);
+    
+    hoverAgeEl.textContent = ageInYears.toLocaleString();
     livedWeeksEl.textContent = lived.toLocaleString();
     remainingWeeksEl.textContent = remaining > 0 ? remaining.toLocaleString() : '0';
     percentageEl.textContent = `(${percentage}%)`;
     
     // 통계가 계산되었음을 표시
     statsSection.dataset.calculated = 'true';
+    
+    // hover 정보 리셋
+    hoverWeekInfo = null;
 }
 
 // 캘린더 업데이트
