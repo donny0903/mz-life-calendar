@@ -12,7 +12,7 @@
 }
 
 body {
-    font-family: "Pretendard", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", sans-serif;
     background: #000000;
     color: #ffffff;
     padding: 20px;
@@ -36,96 +36,36 @@ body {
     padding: 40px;
 }
 
+/* Step 3 헤더 영역 */
+.step3-header {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 40px;
+}
+
+.step3-date-select {
+    display: flex;
+    gap: 8px;
+}
+
+.step3-date-select .date-select {
+    padding: 10px 14px;
+    font-size: 0.95rem;
+}
+
 header {
     text-align: left;
     margin-bottom: 40px;
 }
 
 h1 {
-    font-family: 'Helvetica Black Oblique', 'Helvetica', 'Arial Black', sans-serif;
-    font-size: 8rem;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+    font-size: 2.5rem;
     margin-bottom: 10px;
     color: #ffffff;
-    font-weight: 900;
-    font-style: oblique;
-    letter-spacing: 0.03em;
-    word-spacing: -0.25em;
-}
-
-h1 .to-text {
-    font-size: 0.6em;
-    vertical-align: middle;
-}
-
-.info-btn {
-    padding: 10px 15px;
-    font-size: 0.95rem;
-    border: 1px solid #333333;
-    border-radius: 400px;
-    background: #000000;
-    color: #ffffff;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    flex-shrink: 0;
-    min-width: auto;
-}
-
-.info-btn:hover {
-    border-color: #555555;
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    animation: fadeIn 0.3s;
-}
-
-.modal-content {
-    background-color: #1a1a1a;
-    margin: 15% auto;
-    padding: 30px;
-    border: 1px solid #333333;
-    border-radius: 12px;
-    width: 80%;
-    max-width: 500px;
-    position: relative;
-    animation: slideDown 0.3s;
-}
-
-.modal-content h2 {
-    color: #ffffff;
-    margin-bottom: 20px;
-    font-size: 1.8rem;
-}
-
-.modal-content p {
-    color: #aaaaaa;
-    font-size: 1.1rem;
-    line-height: 1.6;
-    margin-bottom: 10px;
-}
-
-.close-btn {
-    color: #aaaaaa;
-    position: absolute;
-    top: 15px;
-    right: 25px;
-    font-size: 2rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: color 0.3s;
-}
-
-.close-btn:hover,
-.close-btn:focus {
-    color: #ffffff;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
 }
 
 @keyframes slideDown {
@@ -287,7 +227,7 @@ h1 .to-text {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    font-family: "Pretendard", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
     font-size: 3.5rem;
     color: #ffffff;
     font-weight: 700;
@@ -482,7 +422,7 @@ h1 .to-text {
     display: grid;
     grid-template-columns: repeat(52, 1fr);
     gap: 5px;
-    padding: 20px;
+    padding: 20px, 0px;
     background: #000000;
     border-radius: 12px;
     min-width: 600px;

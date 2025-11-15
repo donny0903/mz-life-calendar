@@ -99,25 +99,60 @@ function updateDayOptions() {
 // 이벤트 리스너
 function attachEventListeners() {
     // Step 1 -> Step 2
-    nextBtn.addEventListener('click', goToStep2);
+    if (nextBtn) {
+        nextBtn.addEventListener('click', goToStep2);
+    }
     
     // Step 3 -> Step 1 (다시하기)
-    resetBtn.addEventListener('click', resetToStep1);
+    if (resetBtn) {
+        resetBtn.addEventListener('click', resetToStep1);
+    }
+    
+    // Step 3 드롭다운 변경 시 자동 재계산
+    if (birthYearSelect) {
+        birthYearSelect.addEventListener('change', onDateChange);
+    }
+    if (birthMonthSelect) {
+        birthMonthSelect.addEventListener('change', onDateChange);
+    }
+    if (birthDaySelect) {
+        birthDaySelect.addEventListener('change', onDateChange);
+    }
     
     // 모달 이벤트
-    infoBtn.addEventListener('click', () => {
-        infoModal.style.display = 'block';
-    });
+    if (infoBtn) {
+        infoBtn.addEventListener('click', () => {
+            infoModal.style.display = 'block';
+        });
+    }
     
-    closeBtn.addEventListener('click', () => {
-        infoModal.style.display = 'none';
-    });
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            infoModal.style.display = 'none';
+        });
+    }
     
     window.addEventListener('click', (e) => {
         if (e.target === infoModal) {
             infoModal.style.display = 'none';
         }
     });
+}
+
+// 날짜 변경 시 자동 재계산
+function onDateChange() {
+    const year = birthYearSelect.value;
+    const month = birthMonthSelect.value;
+    const day = birthDaySelect.value;
+    
+    if (year && month && day) {
+        currentBirthDate = {
+            year: parseInt(year),
+            month: parseInt(month),
+            day: parseInt(day)
+        };
+        calculate();
+    }
 }
 
 // Step 1 -> Step 2로 이동
@@ -288,7 +323,7 @@ function calculate() {
 
 // 나이 타이틀 업데이트
 function updateAgeTitle(koreanAge) {
-    ageTitle.innerHTML = `${koreanAge} <span class="to-text">to</span> 85`;
+    ageTitle.textContent = `${koreanAge} to 85`;
 }
 
 // 통계 업데이트
@@ -317,9 +352,6 @@ function updateCalendar(livedWeeks) {
             box.classList.add('lived', 'current-week');
         }
     });
-    
-    // 캘린더로 스크롤
-    lifeCalendar.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 // 생년월일 저장

@@ -10,7 +10,7 @@
 <body>
     <div class="container">
         <!-- Step 1: 생년월일 입력 -->
-        <div id="step1" class="step-section">
+        <!-- <div id="step1" class="step-section">
             <div class="input-section">
                 <div class="input-wrapper">
                     <div class="input-group">
@@ -27,10 +27,10 @@
                     <button id="nextBtn">완료</button>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <!-- Step 2: 중간 메시지 -->
-        <div id="step2" class="step-section" style="display: none;">
+        <!-- <div id="step2" class="step-section" style="display: none;">
             <div class="message-section">
                 <div class="message-group group-1">
                     <span class="message-line line-1">85살까지 산다면</span>
@@ -45,14 +45,26 @@
                     <span class="message-line line-6">후회는 없나요?</span>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <!-- Step 3: 결과 화면 -->
-        <div id="step3" class="step-section" style="display: none;">
-            <button id="resetBtn" class="reset-btn">다시 입력하기</button>
+        <div id="step3" class="step-section">
+            <div class="step3-header">
+                <div class="step3-date-select">
+                    <select id="birthYear" class="date-select">
+                        <option value="">YYYY</option>
+                    </select>
+                    <select id="birthMonth" class="date-select">
+                        <option value="">MM</option>
+                    </select>
+                    <select id="birthDay" class="date-select">
+                        <option value="">DD</option>
+                    </select>
+                </div>
+            </div>
             
             <header>
-                <h1 id="ageTitle">00 <span class="to-text">to</span> 85</h1>
+                <h1 id="ageTitle">00 to 85</h1>
             </header>
 
             <div class="stats-section" id="statsSection">
@@ -71,15 +83,6 @@
                 <div id="lifeCalendar" class="life-calendar">
                     <!-- 4400개의 박스가 JavaScript로 생성됩니다 -->
                 </div>
-            </div>
-        </div>
-
-        <div id="infoModal" class="modal">
-            <div class="modal-content">
-                <span class="close-btn">&times;</span>
-                <h2>Life Calendar</h2>
-                <p>85살까지 산다면 나는 몇 주를 살 수 있을까?</p>
-                <p>약 4,400주 정도 산다고 합니다.</p>
             </div>
         </div>
     </div>
