@@ -4,24 +4,74 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MZ Life Calendar - 나의 인생은 몇 주일까?</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <div class="input-section">
-            <div class="input-group">
-                <select id="birthYear" class="date-select">
-                    <option value="">년도</option>
-                </select>
-                <select id="birthMonth" class="date-select">
-                    <option value="">월</option>
-                </select>
-                <select id="birthDay" class="date-select">
-                    <option value="">일</option>
-                </select>
-                <button id="calculateBtn">!</button>
+        <!-- Step 1: 생년월일 입력 -->
+        <div id="step1" class="step-section">
+            <div class="input-section">
+                <div class="input-wrapper">
+                    <div class="input-group">
+                        <select id="birthYear" class="date-select">
+                            <option value="">YYYY</option>
+                        </select>
+                        <select id="birthMonth" class="date-select">
+                            <option value="">MM</option>
+                        </select>
+                        <select id="birthDay" class="date-select">
+                            <option value="">DD</option>
+                        </select>
+                    </div>
+                    <button id="nextBtn">완료</button>
+                </div>
             </div>
-            <button id="infoBtn" class="info-btn" title="정보 보기">?</button>
+        </div>
+
+        <!-- Step 2: 중간 메시지 -->
+        <div id="step2" class="step-section" style="display: none;">
+            <div class="message-section">
+                <div class="message-group group-1">
+                    <span class="message-line line-1">85살까지 산다면</span>
+                    <span class="message-line line-2">나에게 주어진 시간은 얼마나 될까요?</span>
+                </div>
+                <div class="message-group group-2">
+                    <span class="message-line line-3">4,440주라고 합니다.</span>
+                </div>
+                <div class="message-group group-3">
+                    <span class="message-line line-4">지금 삶에 만족하나요?</span>
+                    <span class="message-line line-5">내일이 기다려지나요?</span>
+                    <span class="message-line line-6">후회는 없나요?</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: 결과 화면 -->
+        <div id="step3" class="step-section" style="display: none;">
+            <button id="resetBtn" class="reset-btn">다시 입력하기</button>
+            
+            <header>
+                <h1 id="ageTitle">00 <span class="to-text">to</span> 85</h1>
+            </header>
+
+            <div class="stats-section" id="statsSection">
+                <div class="stat-line">
+                    <span class="stat-label">살아온 주</span>
+                    <span class="stat-value" id="livedWeeks">0</span>
+                    <span class="stat-percentage" id="percentage">(0%)</span>
+                </div>
+                <div class="stat-line">
+                    <span class="stat-label">남은 주</span>
+                    <span class="stat-value" id="remainingWeeks">0</span>
+                </div>
+            </div>
+
+            <div class="calendar-wrapper">
+                <div id="lifeCalendar" class="life-calendar">
+                    <!-- 4400개의 박스가 JavaScript로 생성됩니다 -->
+                </div>
+            </div>
         </div>
 
         <div id="infoModal" class="modal">
@@ -30,28 +80,6 @@
                 <h2>Life Calendar</h2>
                 <p>85살까지 산다면 나는 몇 주를 살 수 있을까?</p>
                 <p>약 4,400주 정도 산다고 합니다.</p>
-            </div>
-        </div>
-
-        <header>
-            <h1 id="ageTitle">00 <span class="to-text">to</span> 85</h1>
-        </header>
-
-        <div class="stats-section" id="statsSection">
-            <div class="stat-line">
-                <span class="stat-label">살아온 주</span>
-                <span class="stat-value" id="livedWeeks">0</span>
-                <span class="stat-percentage" id="percentage">(0%)</span>
-            </div>
-            <div class="stat-line">
-                <span class="stat-label">남은 주</span>
-                <span class="stat-value" id="remainingWeeks">0</span>
-            </div>
-        </div>
-
-        <div class="calendar-wrapper">
-            <div id="lifeCalendar" class="life-calendar">
-                <!-- 4400개의 박스가 JavaScript로 생성됩니다 -->
             </div>
         </div>
     </div>

@@ -7,7 +7,9 @@ const LIFE_EXPECTANCY = 85;
 const birthYearSelect = document.getElementById('birthYear');
 const birthMonthSelect = document.getElementById('birthMonth');
 const birthDaySelect = document.getElementById('birthDay');
-const calculateBtn = document.getElementById('calculateBtn');
+const nextBtn = document.getElementById('nextBtn');
+const showResultBtn = document.getElementById('showResultBtn');
+const resetBtn = document.getElementById('resetBtn');
 const lifeCalendar = document.getElementById('lifeCalendar');
 const statsSection = document.getElementById('statsSection');
 const livedWeeksEl = document.getElementById('livedWeeks');
@@ -17,6 +19,14 @@ const infoBtn = document.getElementById('infoBtn');
 const infoModal = document.getElementById('infoModal');
 const closeBtn = document.querySelector('.close-btn');
 const ageTitle = document.getElementById('ageTitle');
+
+// Step 요소
+const step1 = document.getElementById('step1');
+const step2 = document.getElementById('step2');
+const step3 = document.getElementById('step3');
+
+// 현재 단계 관리
+let currentBirthDate = null;
 
 // 초기화
 function init() {
@@ -52,6 +62,12 @@ function populateDateSelects() {
     // 년/월 변경 시 일자 업데이트
     birthYearSelect.addEventListener('change', updateDayOptions);
     birthMonthSelect.addEventListener('change', updateDayOptions);
+    
+    // 기본값 설정 (1990년 1월 1일)
+    birthYearSelect.value = '1990';
+    birthMonthSelect.value = '1';
+    updateDayOptions();
+    birthDaySelect.value = '1';
 }
 
 // 일자 옵션 업데이트 (월별 일수 반영)
@@ -63,8 +79,8 @@ function updateDayOptions() {
     // 해당 월의 마지막 날 구하기
     const daysInMonth = new Date(year, month, 0).getDate();
     
-    // 기존 옵션 제거 (첫 번째 "일" 옵션 제외)
-    birthDaySelect.innerHTML = '<option value="">일</option>';
+    // 기존 옵션 제거 (첫 번째 "DD" 옵션 제외)
+    birthDaySelect.innerHTML = '<option value="">DD</option>';
     
     // 새 옵션 추가
     for (let day = 1; day <= daysInMonth; day++) {
@@ -82,7 +98,11 @@ function updateDayOptions() {
 
 // 이벤트 리스너
 function attachEventListeners() {
-    calculateBtn.addEventListener('click', calculate);
+    // Step 1 -> Step 2
+    nextBtn.addEventListener('click', goToStep2);
+    
+    // Step 3 -> Step 1 (다시하기)
+    resetBtn.addEventListener('click', resetToStep1);
     
     // 모달 이벤트
     infoBtn.addEventListener('click', () => {
@@ -98,6 +118,65 @@ function attachEventListeners() {
             infoModal.style.display = 'none';
         }
     });
+}
+
+// Step 1 -> Step 2로 이동
+function goToStep2() {
+    const year = birthYearSelect.value;
+    const month = birthMonthSelect.value;
+    const day = birthDaySelect.value;
+    
+    if (!year || !month || !day) {
+        alert('생년월일을 모두 선택해주세요!');
+        return;
+    }
+    
+    // 생년월일 저장
+    currentBirthDate = {
+        year: parseInt(year),
+        month: parseInt(month),
+        day: parseInt(day)
+    };
+    
+    // 화면 전환
+    step1.style.display = 'none';
+    step2.style.display = 'block';
+    
+    // 애니메이션 시작
+    setTimeout(() => {
+        document.querySelectorAll('.message-line').forEach(line => {
+            line.classList.add('fade-in');
+        });
+    }, 100);
+    
+    // 13초 후 자동으로 step3로 이동 (마지막 텍스트 10초 + 2초 대기 + 1초 여유)
+    setTimeout(() => {
+        goToStep3();
+    }, 13000);
+}
+
+// Step 2 -> Step 3로 이동
+function goToStep3() {
+    if (!currentBirthDate) return;
+    
+    // 계산 실행
+    calculate();
+    
+    // 화면 전환
+    step2.style.display = 'none';
+    step3.style.display = 'block';
+}
+
+// 다시 처음으로
+function resetToStep1() {
+    step3.style.display = 'none';
+    step1.style.display = 'block';
+    
+    // 선택 초기화
+    birthYearSelect.value = '';
+    birthMonthSelect.value = '';
+    birthDaySelect.value = '';
+    currentBirthDate = null;
 }
 
 // 4400개의 박스 생성
@@ -170,14 +249,9 @@ document.addEventListener('click', (e) => {
 
 // 계산 및 표시
 function calculate() {
-    const year = birthYearSelect.value;
-    const month = birthMonthSelect.value;
-    const day = birthDaySelect.value;
+    if (!currentBirthDate) return;
     
-    if (!year || !month || !day) {
-        alert('생년월일을 모두 선택해주세요!');
-        return;
-    }
+    const { year, month, day } = currentBirthDate;
     
     // 생년월일 문자열 생성 (YYYY-MM-DD)
     const birthDateString = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
@@ -258,11 +332,20 @@ function loadSavedBirthDate() {
     const savedBirthDate = localStorage.getItem('birthDate');
     if (savedBirthDate) {
         const [year, month, day] = savedBirthDate.split('-');
+        currentBirthDate = {
+            year: parseInt(year),
+            month: parseInt(month),
+            day: parseInt(day)
+        };
         birthYearSelect.value = year;
         birthMonthSelect.value = parseInt(month);
         updateDayOptions();
         birthDaySelect.value = parseInt(day);
+        
+        // 저장된 데이터가 있으면 바로 Step 3로
         calculate();
+        step1.style.display = 'none';
+        step3.style.display = 'block';
     }
 }
 

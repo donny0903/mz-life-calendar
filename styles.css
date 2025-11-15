@@ -12,7 +12,7 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-family: "Pretendard", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     background: #000000;
     color: #ffffff;
     padding: 20px;
@@ -23,9 +23,17 @@ body {
     max-width: 1000px;
     margin: 0 auto;
     background: #000000;
-    padding: 40px;
+    padding: 0;
     border-radius: 0;
     box-shadow: none;
+}
+
+#step1 {
+    padding: 0;
+}
+
+#step3 {
+    padding: 40px;
 }
 
 header {
@@ -131,6 +139,29 @@ h1 .to-text {
     }
 }
 
+/* Step 1 전용 스타일 */
+#step1 .input-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin-bottom: 0;
+    margin-top: -40px;
+}
+
+#step1 .input-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+}
+
+#step1 .input-group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
 .input-section {
     display: flex;
     justify-content: space-between;
@@ -143,6 +174,28 @@ h1 .to-text {
     display: flex;
     align-items: center;
     gap: 8px;
+}
+
+/* Step 1 드롭다운 크기 */
+#step1 .date-select {
+    padding: 18px 20px;
+    font-size: 1.3rem;
+    border: 1px solid #333333;
+    border-radius: 12px;
+    outline: none;
+    transition: all 0.2s;
+    background: #000000;
+    color: #ffffff;
+    cursor: pointer;
+    min-width: 140px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 20px;
+    padding-right: 48px;
 }
 
 .date-select {
@@ -180,7 +233,21 @@ h1 .to-text {
     padding: 10px;
 }
 
-#calculateBtn {
+/* Step 1 다음 버튼 */
+#step1 #nextBtn {
+    padding: 18px 40px;
+    font-size: 1.3rem;
+    font-weight: 600;
+    background: #ffffff;
+    color: #000000;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-left: 0;
+}
+
+#nextBtn {
     padding: 10px 24px;
     font-size: 0.95rem;
     font-weight: 600;
@@ -193,12 +260,171 @@ h1 .to-text {
     margin-left: 8px;
 }
 
-#calculateBtn:hover {
+#nextBtn:hover {
     background: #e0e0e0;
 }
 
-#calculateBtn:active {
+#nextBtn:active {
     transform: translateY(0);
+}
+
+/* Step 2 메시지 화면 */
+.message-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    text-align: center;
+    position: relative;
+}
+
+.message-group {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    font-family: "Pretendard", sans-serif;
+    font-size: 3.5rem;
+    color: #ffffff;
+    font-weight: 700;
+    line-height: 1.5;
+    letter-spacing: -0.02em;
+    width: 100%;
+    max-width: 900px;
+}
+
+.message-group.group-1 {
+    pointer-events: none;
+}
+
+.message-group.group-2 {
+    pointer-events: none;
+}
+
+.message-group.group-3 {
+    pointer-events: none;
+}
+
+.message-line {
+    display: block;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.message-line.fade-in {
+    animation: messageFadeIn 1.2s ease-out forwards;
+}
+
+.message-line.fade-out {
+    animation: messageFadeOut 0.8s ease-out forwards;
+}
+
+/* Line 1 & 2: 표시 후 3초에 사라짐 */
+.message-line.line-1 {
+    animation: messageFadeIn 1.2s ease-out 0s forwards, 
+               messageFadeOut 0.8s ease-out 3s forwards;
+}
+
+.message-line.line-2 {
+    animation: messageFadeIn 1.2s ease-out 1s forwards,
+               messageFadeOut 0.8s ease-out 3s forwards;
+}
+
+/* Line 3: 4초에 표시, 7초에 사라짐 */
+.message-line.line-3 {
+    animation: messageFadeIn 1.2s ease-out 4s forwards,
+               messageFadeOut 0.8s ease-out 7s forwards;
+}
+
+/* Line 4, 5, 6: 8초부터 순차 표시 */
+.message-line.line-4 {
+    animation: messageFadeIn 1.2s ease-out 8s forwards;
+}
+
+.message-line.line-5 {
+    animation: messageFadeIn 1.2s ease-out 9s forwards;
+}
+
+.message-line.line-6 {
+    animation: messageFadeIn 1.2s ease-out 10s forwards;
+}
+
+@keyframes messageFadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes messageFadeOut {
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+.show-result-btn {
+    padding: 16px 48px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    background: #ffffff;
+    color: #000000;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+    opacity: 0;
+    animation: buttonFadeIn 1.2s ease-out 11.5s forwards;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 50px);
+    z-index: 10;
+}
+
+@keyframes buttonFadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+.show-result-btn:hover {
+    background: #e0e0e0;
+    transform: translate(-50%, 48px);
+}
+
+.show-result-btn:active {
+    transform: translate(-50%, 50px);
+}
+
+/* Step 3 리셋 버튼 */
+.reset-btn {
+    position: absolute;
+    top: 40px;
+    right: 40px;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    background: transparent;
+    color: #666666;
+    border: 1px solid #333333;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.reset-btn:hover {
+    color: #ffffff;
+    border-color: #555555;
+}
+
+/* Step 섹션 */
+.step-section {
+    position: relative;
 }
 
 .stats-section {
