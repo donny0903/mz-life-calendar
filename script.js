@@ -169,10 +169,11 @@ function createCalendarGrid() {
         weekBox.classList.add('week-box');
         weekBox.dataset.week = i + 1;
         
-        // 호버/클릭 이벤트로 통계 표시
+        // 호버/클릭/터치 이벤트로 통계 표시
         weekBox.addEventListener('mouseenter', showStats);
         weekBox.addEventListener('mouseleave', hideStats);
         weekBox.addEventListener('click', toggleStats);
+        weekBox.addEventListener('touchstart', handleTouch);
         
         lifeCalendar.appendChild(weekBox);
         
@@ -313,6 +314,45 @@ function toggleStats(e) {
     }
 }
 
+// 터치 이벤트 처리 (모바일)
+function handleTouch(e) {
+    // 577px 초과에서는 터치 동작 안함
+    if (window.innerWidth > 577) return;
+    
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const weekBox = e.currentTarget;
+    const weekNumber = parseInt(weekBox.dataset.week);
+    
+    if (statsSection.dataset.calculated === 'true') {
+        if (statsSection.classList.contains('visible')) {
+            statsSection.dataset.locked = 'false';
+            statsSection.classList.remove('visible');
+            statsVisible = false;
+            restoreOriginalStats();
+            
+            // 모든 연도 레이블 숨기기
+            const yearLabels = document.querySelectorAll('.year-label');
+            yearLabels.forEach(label => label.classList.remove('visible'));
+        } else {
+            statsSection.dataset.locked = 'true';
+            updateHoverStats(weekNumber);
+            
+            // 모바일에서는 중앙에 위치
+            statsSection.style.left = '50%';
+            statsSection.style.top = '50%';
+            statsSection.style.transform = 'translate(-50%, -50%)';
+            
+            statsSection.classList.add('visible');
+            statsVisible = true;
+            
+            // hover한 줄의 연도만 표시
+            showYearForWeek(weekNumber);
+        }
+    }
+}
+
 // hover한 주차 정보 업데이트
 function updateHoverStats(weekNumber) {
     // 원래 값 저장 (처음 한 번만)
@@ -347,8 +387,11 @@ function restoreOriginalStats() {
     }
 }
 
-// 외부 클릭 시 통계 숨기기 (577px 이하에서만)
-document.addEventListener('click', (e) => {
+// 외부 클릭/터치 시 통계 숨기기 (577px 이하에서만)
+document.addEventListener('click', handleOutsideClick);
+document.addEventListener('touchstart', handleOutsideClick);
+
+function handleOutsideClick(e) {
     if (window.innerWidth <= 577) {
         if (!statsSection.contains(e.target) && !e.target.classList.contains('week-box')) {
             statsSection.dataset.locked = 'false';
@@ -361,7 +404,7 @@ document.addEventListener('click', (e) => {
             yearLabels.forEach(label => label.classList.remove('visible'));
         }
     }
-});
+}
 
 // 계산 및 표시
 function calculate() {
