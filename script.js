@@ -173,30 +173,57 @@ function resetToStep1() {
 function createCalendarGrid() {
     lifeCalendar.innerHTML = '';
     
+    // 퍼포먼스 최적화: DocumentFragment 사용
+    const fragment = document.createDocumentFragment();
+    
     for (let i = 0; i < TOTAL_WEEKS; i++) {
         const weekBox = document.createElement('div');
         weekBox.classList.add('week-box');
         weekBox.dataset.week = i + 1;
         
-        // 호버/클릭/터치 이벤트로 통계 표시
-        weekBox.addEventListener('mouseenter', showStats);
-        weekBox.addEventListener('mouseleave', hideStats);
-        weekBox.addEventListener('click', toggleStats);
-        weekBox.addEventListener('touchstart', handleTouch);
-        
-        lifeCalendar.appendChild(weekBox);
+        fragment.appendChild(weekBox);
         
         // 52주마다 연도 레이블 추가
         if ((i + 1) % WEEKS_PER_YEAR === 0) {
             const yearLabel = document.createElement('div');
             yearLabel.classList.add('year-label');
             yearLabel.dataset.year = Math.floor((i + 1) / WEEKS_PER_YEAR);
-            lifeCalendar.appendChild(yearLabel);
+            fragment.appendChild(yearLabel);
         }
     }
     
+    lifeCalendar.appendChild(fragment);
+    
+    // 이벤트 위임: 부모에 한 번만 등록
+    attachCalendarEvents();
+    
     // 연도 레이블 업데이트
     updateYearLabels();
+}
+
+// 캘린더 이벤트 등록 (이벤트 위임)
+function attachCalendarEvents() {
+    // 데스크톱: hover 이벤트
+    if (window.innerWidth > 577) {
+        lifeCalendar.addEventListener('mouseenter', (e) => {
+            if (e.target.classList.contains('week-box')) {
+                showStats(e);
+            }
+        }, true);
+        
+        lifeCalendar.addEventListener('mouseleave', (e) => {
+            if (e.target.classList.contains('week-box')) {
+                hideStats();
+            }
+        }, true);
+    }
+    
+    // 모바일/데스크톱: click 이벤트
+    lifeCalendar.addEventListener('click', (e) => {
+        if (e.target.classList.contains('week-box')) {
+            handleBoxClick(e);
+        }
+    });
 }
 
 // 연도 레이블 업데이트
@@ -221,7 +248,7 @@ function showStats(e) {
     // 577px 이하에서는 hover 동작 안함 (click만 동작)
     if (window.innerWidth <= 577) return;
     
-    const weekBox = e.currentTarget;
+    const weekBox = e.target;
     const weekNumber = parseInt(weekBox.dataset.week);
     
     if (statsSection.dataset.calculated === 'true') {
@@ -287,12 +314,13 @@ function hideStats() {
     }
 }
 
-function toggleStats(e) {
+// 박스 클릭 핸들러 (모바일 전용)
+function handleBoxClick(e) {
     // 577px 초과에서는 click 동작 안함 (hover만 동작)
     if (window.innerWidth > 577) return;
     
     e.stopPropagation();
-    const weekBox = e.currentTarget;
+    const weekBox = e.target;
     const weekNumber = parseInt(weekBox.dataset.week);
     
     if (statsSection.dataset.calculated === 'true') {
@@ -305,6 +333,12 @@ function toggleStats(e) {
             // 모든 연도 레이블 숨기기
             const yearLabels = document.querySelectorAll('.year-label');
             yearLabels.forEach(label => label.classList.remove('visible'));
+            
+            // 모바일 하이라이트 제거
+            const activeBox = document.querySelector('.week-box.mobile-active');
+            if (activeBox) {
+                activeBox.classList.remove('mobile-active');
+            }
         } else {
             statsSection.dataset.locked = 'true';
             updateHoverStats(weekNumber);
@@ -319,45 +353,13 @@ function toggleStats(e) {
             
             // hover한 줄의 연도만 표시
             showYearForWeek(weekNumber);
-        }
-    }
-}
-
-// 터치 이벤트 처리 (모바일)
-function handleTouch(e) {
-    // 577px 초과에서는 터치 동작 안함
-    if (window.innerWidth > 577) return;
-    
-    e.preventDefault();
-    e.stopPropagation();
-    
-    const weekBox = e.currentTarget;
-    const weekNumber = parseInt(weekBox.dataset.week);
-    
-    if (statsSection.dataset.calculated === 'true') {
-        if (statsSection.classList.contains('visible')) {
-            statsSection.dataset.locked = 'false';
-            statsSection.classList.remove('visible');
-            statsVisible = false;
-            restoreOriginalStats();
             
-            // 모든 연도 레이블 숨기기
-            const yearLabels = document.querySelectorAll('.year-label');
-            yearLabels.forEach(label => label.classList.remove('visible'));
-        } else {
-            statsSection.dataset.locked = 'true';
-            updateHoverStats(weekNumber);
-            
-            // 모바일에서는 중앙에 위치
-            statsSection.style.left = '50%';
-            statsSection.style.top = '50%';
-            statsSection.style.transform = 'translate(-50%, -50%)';
-            
-            statsSection.classList.add('visible');
-            statsVisible = true;
-            
-            // hover한 줄의 연도만 표시
-            showYearForWeek(weekNumber);
+            // 모바일 하이라이트 추가 (이전 것은 제거)
+            const activeBox = document.querySelector('.week-box.mobile-active');
+            if (activeBox) {
+                activeBox.classList.remove('mobile-active');
+            }
+            weekBox.classList.add('mobile-active');
         }
     }
 }
@@ -396,9 +398,8 @@ function restoreOriginalStats() {
     }
 }
 
-// 외부 클릭/터치 시 통계 숨기기 (577px 이하에서만)
+// 외부 클릭 시 통계 숨기기 (577px 이하에서만)
 document.addEventListener('click', handleOutsideClick);
-document.addEventListener('touchstart', handleOutsideClick);
 
 function handleOutsideClick(e) {
     if (window.innerWidth <= 577) {
@@ -411,6 +412,12 @@ function handleOutsideClick(e) {
             // 모든 연도 레이블 숨기기
             const yearLabels = document.querySelectorAll('.year-label');
             yearLabels.forEach(label => label.classList.remove('visible'));
+            
+            // 모바일 하이라이트 제거
+            const activeBox = document.querySelector('.week-box.mobile-active');
+            if (activeBox) {
+                activeBox.classList.remove('mobile-active');
+            }
         }
     }
 }
