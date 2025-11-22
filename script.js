@@ -172,7 +172,7 @@ function createCalendarGrid() {
         // 호버/클릭 이벤트로 통계 표시
         weekBox.addEventListener('mouseenter', showStats);
         weekBox.addEventListener('mouseleave', hideStats);
-        weekBox.addEventListener('click', toggleStats);
+        // weekBox.addEventListener('click', toggleStats);
         
         lifeCalendar.appendChild(weekBox);
         
@@ -271,25 +271,25 @@ function hideStats() {
     }
 }
 
-function toggleStats(e) {
-    e.stopPropagation();
-    const weekBox = e.currentTarget;
-    const weekNumber = parseInt(weekBox.dataset.week);
-    
-    if (statsSection.dataset.calculated === 'true') {
-        if (statsSection.classList.contains('visible')) {
-            statsSection.dataset.locked = 'false';
-            statsSection.classList.remove('visible');
-            statsVisible = false;
-            restoreOriginalStats();
-        } else {
-            statsSection.dataset.locked = 'true';
-            updateHoverStats(weekNumber);
-            statsSection.classList.add('visible');
-            statsVisible = true;
-        }
-    }
-}
+// function toggleStats(e) {
+//     e.stopPropagation();
+//     const weekBox = e.currentTarget;
+//     const weekNumber = parseInt(weekBox.dataset.week);
+//     
+//     if (statsSection.dataset.calculated === 'true') {
+//         if (statsSection.classList.contains('visible')) {
+//             statsSection.dataset.locked = 'false';
+//             statsSection.classList.remove('visible');
+//             statsVisible = false;
+//             restoreOriginalStats();
+//         } else {
+//             statsSection.dataset.locked = 'true';
+//             updateHoverStats(weekNumber);
+//             statsSection.classList.add('visible');
+//             statsVisible = true;
+//         }
+//     }
+// }
 
 // hover한 주차 정보 업데이트
 function updateHoverStats(weekNumber) {
@@ -326,14 +326,14 @@ function restoreOriginalStats() {
 }
 
 // 외부 클릭 시 통계 숨기기
-document.addEventListener('click', (e) => {
-    if (!statsSection.contains(e.target) && !e.target.classList.contains('week-box')) {
-        statsSection.dataset.locked = 'false';
-        statsSection.classList.remove('visible');
-        statsVisible = false;
-        restoreOriginalStats();
-    }
-});
+// document.addEventListener('click', (e) => {
+//     if (!statsSection.contains(e.target) && !e.target.classList.contains('week-box')) {
+//         statsSection.dataset.locked = 'false';
+//         statsSection.classList.remove('visible');
+//         statsVisible = false;
+//         restoreOriginalStats();
+//     }
+// });
 
 // 계산 및 표시
 function calculate() {
