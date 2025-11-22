@@ -586,4 +586,18 @@ h1 {
     .year-label {
         display: none;
     }
+
+    .message-group {
+        font-size: 2rem;
+        padding: 0 20px;
+        gap: 12px;
+    }
+}
+
+@media (max-width: 577px) {
+    .message-group {
+        font-size: 1.5rem;
+        padding: 0 16px;
+        gap: 10px;
+    }
 }

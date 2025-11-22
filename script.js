@@ -5,6 +5,7 @@ const LIFE_EXPECTANCY = 85;
 
 // DOM 요소
 const birthYearSelect = document.getElementById('birthYear');
+const birthYearModifySelect = document.getElementById('birthYearModify');
 const nextBtn = document.getElementById('nextBtn');
 const showResultBtn = document.getElementById('showResultBtn');
 const resetBtn = document.getElementById('resetBtn');
@@ -39,7 +40,7 @@ function init() {
 function populateDateSelects() {
     const currentYear = new Date().getFullYear();
     
-    // 년도: 1950 ~ 현재년도 (역순)
+    // Step 1: 년도 (1950 ~ 현재년도, 역순)
     for (let year = currentYear; year >= 1950; year--) {
         const option = document.createElement('option');
         option.value = year;
@@ -47,8 +48,15 @@ function populateDateSelects() {
         birthYearSelect.appendChild(option);
     }
     
-    // 기본값 설정 (1990년)
-    birthYearSelect.value = '1990';
+    // Step 3: 년도 (1950 ~ 현재년도, 역순)
+    for (let year = currentYear; year >= 1950; year--) {
+        const option = document.createElement('option');
+        option.value = year;
+        option.textContent = year;
+        birthYearModifySelect.appendChild(option);
+    }
+    
+    // 기본값은 비워둠 (사용자가 직접 선택하도록)
 }
 
 
@@ -65,8 +73,8 @@ function attachEventListeners() {
     }
     
     // Step 3 드롭다운 변경 시 자동 재계산
-    if (birthYearSelect) {
-        birthYearSelect.addEventListener('change', onDateChange);
+    if (birthYearModifySelect) {
+        birthYearModifySelect.addEventListener('change', onDateChange);
     }
     
     // 모달 이벤트
@@ -89,9 +97,9 @@ function attachEventListeners() {
     });
 }
 
-// 날짜 변경 시 자동 재계산
+// 날짜 변경 시 자동 재계산 (Step 3에서)
 function onDateChange() {
-    const year = birthYearSelect.value;
+    const year = birthYearModifySelect.value;
     
     if (year) {
         currentBirthDate = {
@@ -106,19 +114,17 @@ function onDateChange() {
 // Step 1 -> Step 2로 이동
 function goToStep2() {
     const year = birthYearSelect.value;
-    const month = birthMonthSelect.value;
-    const day = birthDaySelect.value;
     
-    if (!year || !month || !day) {
-        alert('생년월일을 모두 선택해주세요!');
+    if (!year) {
+        alert('출생연도를 선택해주세요!');
         return;
     }
     
-    // 생년월일 저장
+    // 출생연도 저장 (월/일은 1월 1일로 고정)
     currentBirthDate = {
         year: parseInt(year),
-        month: parseInt(month),
-        day: parseInt(day)
+        month: 1,
+        day: 1
     };
     
     // 화면 전환
@@ -141,6 +147,9 @@ function goToStep2() {
 // Step 2 -> Step 3로 이동
 function goToStep3() {
     if (!currentBirthDate) return;
+    
+    // Step 3의 년도 선택박스에 값 설정
+    birthYearModifySelect.value = currentBirthDate.year;
     
     // 계산 실행
     calculate();
@@ -492,19 +501,11 @@ function saveBirthDate(birthYear) {
 
 // 저장된 출생연도 불러오기
 function loadSavedBirthDate() {
+    // 항상 Step 1부터 시작
     const savedBirthYear = localStorage.getItem('birthYear');
     if (savedBirthYear) {
-        currentBirthDate = {
-            year: parseInt(savedBirthYear),
-            month: 1,
-            day: 1
-        };
+        // Step 1의 기본값으로만 설정
         birthYearSelect.value = savedBirthYear;
-        
-        // 저장된 데이터가 있으면 바로 Step 3로
-        calculate();
-        step1.style.display = 'none';
-        step3.style.display = 'block';
     }
 }
 
