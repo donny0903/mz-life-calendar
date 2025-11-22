@@ -39,8 +39,10 @@ body {
 /* Step 3 헤더 영역 */
 .step3-header {
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 40px;
+    margin-right: 40px;
 }
 
 .step3-date-select {
@@ -51,6 +53,10 @@ body {
 .step3-date-select .date-select {
     padding: 10px 14px;
     font-size: 0.95rem;
+}
+
+.step3-header h1 {
+    margin-bottom: 0;
 }
 
 header {
@@ -427,12 +433,13 @@ h1 {
 
 .life-calendar {
     display: grid;
-    grid-template-columns: repeat(52, 1fr);
+    grid-template-columns: repeat(52, 1fr) auto;
     gap: 5px;
-    padding: 20px, 0px;
+    padding: 20px 0px;
     background: #000000;
     border-radius: 12px;
     min-width: 600px;
+    position: relative;
 }
 
 .week-box {
@@ -458,6 +465,23 @@ h1 {
 .week-box.current-week {
     background: #e74c3c;
     animation: pulse 2s infinite;
+}
+
+.year-label {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 12px;
+    font-size: 1rem;
+    color: #bdbdbd;
+    font-weight: 500;
+    opacity: 0;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+}
+
+.year-label.visible {
+    opacity: 1;
 }
 
 @keyframes pulse {

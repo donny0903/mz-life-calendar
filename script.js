@@ -5,8 +5,6 @@ const LIFE_EXPECTANCY = 85;
 
 // DOM 요소
 const birthYearSelect = document.getElementById('birthYear');
-const birthMonthSelect = document.getElementById('birthMonth');
-const birthDaySelect = document.getElementById('birthDay');
 const nextBtn = document.getElementById('nextBtn');
 const showResultBtn = document.getElementById('showResultBtn');
 const resetBtn = document.getElementById('resetBtn');
@@ -49,53 +47,10 @@ function populateDateSelects() {
         birthYearSelect.appendChild(option);
     }
     
-    // 월: 1 ~ 12
-    for (let month = 1; month <= 12; month++) {
-        const option = document.createElement('option');
-        option.value = month;
-        option.textContent = String(month).padStart(2, '0');
-        birthMonthSelect.appendChild(option);
-    }
-    
-    // 일: 1 ~ 31
-    updateDayOptions();
-    
-    // 년/월 변경 시 일자 업데이트
-    birthYearSelect.addEventListener('change', updateDayOptions);
-    birthMonthSelect.addEventListener('change', updateDayOptions);
-    
-    // 기본값 설정 (1990년 1월 1일)
+    // 기본값 설정 (1990년)
     birthYearSelect.value = '1990';
-    birthMonthSelect.value = '1';
-    updateDayOptions();
-    birthDaySelect.value = '1';
 }
 
-// 일자 옵션 업데이트 (월별 일수 반영)
-function updateDayOptions() {
-    const year = parseInt(birthYearSelect.value) || new Date().getFullYear();
-    const month = parseInt(birthMonthSelect.value) || 1;
-    const selectedDay = birthDaySelect.value;
-    
-    // 해당 월의 마지막 날 구하기
-    const daysInMonth = new Date(year, month, 0).getDate();
-    
-    // 기존 옵션 제거 (첫 번째 "DD" 옵션 제외)
-    birthDaySelect.innerHTML = '<option value="">DD</option>';
-    
-    // 새 옵션 추가
-    for (let day = 1; day <= daysInMonth; day++) {
-        const option = document.createElement('option');
-        option.value = day;
-        option.textContent = String(day).padStart(2, '0');
-        birthDaySelect.appendChild(option);
-    }
-    
-    // 이전 선택값 복원
-    if (selectedDay && selectedDay <= daysInMonth) {
-        birthDaySelect.value = selectedDay;
-    }
-}
 
 // 이벤트 리스너
 function attachEventListeners() {
@@ -112,12 +67,6 @@ function attachEventListeners() {
     // Step 3 드롭다운 변경 시 자동 재계산
     if (birthYearSelect) {
         birthYearSelect.addEventListener('change', onDateChange);
-    }
-    if (birthMonthSelect) {
-        birthMonthSelect.addEventListener('change', onDateChange);
-    }
-    if (birthDaySelect) {
-        birthDaySelect.addEventListener('change', onDateChange);
     }
     
     // 모달 이벤트
@@ -143,14 +92,12 @@ function attachEventListeners() {
 // 날짜 변경 시 자동 재계산
 function onDateChange() {
     const year = birthYearSelect.value;
-    const month = birthMonthSelect.value;
-    const day = birthDaySelect.value;
     
-    if (year && month && day) {
+    if (year) {
         currentBirthDate = {
             year: parseInt(year),
-            month: parseInt(month),
-            day: parseInt(day)
+            month: 1,
+            day: 1
         };
         calculate();
     }
@@ -210,8 +157,6 @@ function resetToStep1() {
     
     // 선택 초기화
     birthYearSelect.value = '';
-    birthMonthSelect.value = '';
-    birthDaySelect.value = '';
     currentBirthDate = null;
 }
 
@@ -230,7 +175,31 @@ function createCalendarGrid() {
         weekBox.addEventListener('click', toggleStats);
         
         lifeCalendar.appendChild(weekBox);
+        
+        // 52주마다 연도 레이블 추가
+        if ((i + 1) % WEEKS_PER_YEAR === 0) {
+            const yearLabel = document.createElement('div');
+            yearLabel.classList.add('year-label');
+            yearLabel.dataset.year = Math.floor((i + 1) / WEEKS_PER_YEAR);
+            lifeCalendar.appendChild(yearLabel);
+        }
     }
+    
+    // 연도 레이블 업데이트
+    updateYearLabels();
+}
+
+// 연도 레이블 업데이트
+function updateYearLabels() {
+    if (!currentBirthDate) return;
+    
+    const birthYear = currentBirthDate.year;
+    const yearLabels = document.querySelectorAll('.year-label');
+    
+    yearLabels.forEach((label, index) => {
+        const year = birthYear + index;
+        label.textContent = year;
+    });
 }
 
 // 통계 표시
@@ -253,6 +222,24 @@ function showStats(e) {
         
         statsSection.classList.add('visible');
         statsVisible = true;
+        
+        // hover한 줄의 연도만 표시
+        showYearForWeek(weekNumber);
+    }
+}
+
+// hover한 주차의 연도 레이블만 표시
+function showYearForWeek(weekNumber) {
+    // 모든 연도 레이블 숨기기
+    const yearLabels = document.querySelectorAll('.year-label');
+    yearLabels.forEach(label => label.classList.remove('visible'));
+    
+    // 해당 주차의 연도 인덱스 계산 (0부터 시작)
+    const yearIndex = Math.floor((weekNumber - 1) / WEEKS_PER_YEAR);
+    
+    // 해당 연도 레이블만 표시
+    if (yearLabels[yearIndex]) {
+        yearLabels[yearIndex].classList.add('visible');
     }
 }
 
@@ -276,6 +263,10 @@ function hideStats() {
             if (hoverWeekInfo) {
                 restoreOriginalStats();
             }
+            
+            // 모든 연도 레이블 숨기기
+            const yearLabels = document.querySelectorAll('.year-label');
+            yearLabels.forEach(label => label.classList.remove('visible'));
         }, 200);
     }
 }
@@ -350,11 +341,8 @@ function calculate() {
     
     const { year, month, day } = currentBirthDate;
     
-    // 생년월일 문자열 생성 (YYYY-MM-DD)
-    const birthDateString = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-    
-    // 생년월일 저장
-    saveBirthDate(birthDateString);
+    // 출생연도 저장
+    saveBirthDate(year.toString());
     
     const birth = new Date(year, month - 1, day);
     const today = new Date();
@@ -421,27 +409,26 @@ function updateCalendar(livedWeeks) {
             box.classList.add('lived', 'current-week');
         }
     });
+    
+    // 연도 레이블 업데이트
+    updateYearLabels();
 }
 
-// 생년월일 저장
-function saveBirthDate(birthDate) {
-    localStorage.setItem('birthDate', birthDate);
+// 출생연도 저장
+function saveBirthDate(birthYear) {
+    localStorage.setItem('birthYear', birthYear);
 }
 
-// 저장된 생년월일 불러오기
+// 저장된 출생연도 불러오기
 function loadSavedBirthDate() {
-    const savedBirthDate = localStorage.getItem('birthDate');
-    if (savedBirthDate) {
-        const [year, month, day] = savedBirthDate.split('-');
+    const savedBirthYear = localStorage.getItem('birthYear');
+    if (savedBirthYear) {
         currentBirthDate = {
-            year: parseInt(year),
-            month: parseInt(month),
-            day: parseInt(day)
+            year: parseInt(savedBirthYear),
+            month: 1,
+            day: 1
         };
-        birthYearSelect.value = year;
-        birthMonthSelect.value = parseInt(month);
-        updateDayOptions();
-        birthDaySelect.value = parseInt(day);
+        birthYearSelect.value = savedBirthYear;
         
         // 저장된 데이터가 있으면 바로 Step 3로
         calculate();
