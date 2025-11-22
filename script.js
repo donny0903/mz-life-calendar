@@ -172,7 +172,7 @@ function createCalendarGrid() {
         // 호버/클릭 이벤트로 통계 표시
         weekBox.addEventListener('mouseenter', showStats);
         weekBox.addEventListener('mouseleave', hideStats);
-        // weekBox.addEventListener('click', toggleStats);
+        weekBox.addEventListener('click', toggleStats);
         
         lifeCalendar.appendChild(weekBox);
         
@@ -208,6 +208,9 @@ let statsTimeout = null;
 let hoverWeekInfo = null;
 
 function showStats(e) {
+    // 577px 이하에서는 hover 동작 안함 (click만 동작)
+    if (window.innerWidth <= 577) return;
+    
     const weekBox = e.currentTarget;
     const weekNumber = parseInt(weekBox.dataset.week);
     
@@ -254,6 +257,9 @@ function updateStatsPosition(e) {
 }
 
 function hideStats() {
+    // 577px 이하에서는 hover 동작 안함 (click만 동작)
+    if (window.innerWidth <= 577) return;
+    
     if (statsVisible && statsSection.dataset.locked !== 'true') {
         statsTimeout = setTimeout(() => {
             statsSection.classList.remove('visible');
@@ -271,25 +277,41 @@ function hideStats() {
     }
 }
 
-// function toggleStats(e) {
-//     e.stopPropagation();
-//     const weekBox = e.currentTarget;
-//     const weekNumber = parseInt(weekBox.dataset.week);
-//     
-//     if (statsSection.dataset.calculated === 'true') {
-//         if (statsSection.classList.contains('visible')) {
-//             statsSection.dataset.locked = 'false';
-//             statsSection.classList.remove('visible');
-//             statsVisible = false;
-//             restoreOriginalStats();
-//         } else {
-//             statsSection.dataset.locked = 'true';
-//             updateHoverStats(weekNumber);
-//             statsSection.classList.add('visible');
-//             statsVisible = true;
-//         }
-//     }
-// }
+function toggleStats(e) {
+    // 577px 초과에서는 click 동작 안함 (hover만 동작)
+    if (window.innerWidth > 577) return;
+    
+    e.stopPropagation();
+    const weekBox = e.currentTarget;
+    const weekNumber = parseInt(weekBox.dataset.week);
+    
+    if (statsSection.dataset.calculated === 'true') {
+        if (statsSection.classList.contains('visible')) {
+            statsSection.dataset.locked = 'false';
+            statsSection.classList.remove('visible');
+            statsVisible = false;
+            restoreOriginalStats();
+            
+            // 모든 연도 레이블 숨기기
+            const yearLabels = document.querySelectorAll('.year-label');
+            yearLabels.forEach(label => label.classList.remove('visible'));
+        } else {
+            statsSection.dataset.locked = 'true';
+            updateHoverStats(weekNumber);
+            
+            // 모바일에서는 중앙에 위치
+            statsSection.style.left = '50%';
+            statsSection.style.top = '50%';
+            statsSection.style.transform = 'translate(-50%, -50%)';
+            
+            statsSection.classList.add('visible');
+            statsVisible = true;
+            
+            // hover한 줄의 연도만 표시
+            showYearForWeek(weekNumber);
+        }
+    }
+}
 
 // hover한 주차 정보 업데이트
 function updateHoverStats(weekNumber) {
@@ -325,15 +347,21 @@ function restoreOriginalStats() {
     }
 }
 
-// 외부 클릭 시 통계 숨기기
-// document.addEventListener('click', (e) => {
-//     if (!statsSection.contains(e.target) && !e.target.classList.contains('week-box')) {
-//         statsSection.dataset.locked = 'false';
-//         statsSection.classList.remove('visible');
-//         statsVisible = false;
-//         restoreOriginalStats();
-//     }
-// });
+// 외부 클릭 시 통계 숨기기 (577px 이하에서만)
+document.addEventListener('click', (e) => {
+    if (window.innerWidth <= 577) {
+        if (!statsSection.contains(e.target) && !e.target.classList.contains('week-box')) {
+            statsSection.dataset.locked = 'false';
+            statsSection.classList.remove('visible');
+            statsVisible = false;
+            restoreOriginalStats();
+            
+            // 모든 연도 레이블 숨기기
+            const yearLabels = document.querySelectorAll('.year-label');
+            yearLabels.forEach(label => label.classList.remove('visible'));
+        }
+    }
+});
 
 // 계산 및 표시
 function calculate() {
